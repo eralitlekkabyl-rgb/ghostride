@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Владельцам - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="owners">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="owners.html">Владельцам</a><a href="dashboard.html">Кабинет</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="log-in"></i><span data-auth-label>Войти</span></button><a class="btn primary" href="dashboard.html"><i data-lucide="layout-dashboard"></i>Кабинет</a></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Владельцам</p>
+        <h1>Добавьте авто и принимайте оплату</h1>
+        <p class="lead">В demo-версии машина сразу попадает в каталог, а оплаченные брони отображаются в кабинете владельца.</p>
+      </section>
+      <section>
+        <div class="owners-layout">
+          <div>
+            <div class="steps">
+              <article class="step"><b>1</b><h3>Профиль</h3><p class="muted">Марка, город, ставка, фото и удобства.</p></article>
+              <article class="step"><b>2</b><h3>Бронь</h3><p class="muted">Клиент выбирает авто и оплачивает demo-картой.</p></article>
+              <article class="step"><b>3</b><h3>Выплаты</h3><p class="muted">Доход и комиссия видны в кабинете.</p></article>
+            </div>
+            <div class="calc" style="margin-top:18px" id="calculator">
+              <h3>Калькулятор дохода</h3>
+              <label class="field">Часов в день: <b id="hVal">4 ч</b><input id="hours" type="range" min="1" max="12" value="4" /></label>
+              <label class="field">Ставка в час: <b id="rVal">3 500₸</b><input id="rate" type="range" min="1500" max="9000" step="250" value="3500" /></label>
+              <label class="field">Комиссия: <b id="fVal">20%</b><input id="fee" type="range" min="15" max="30" value="20" /></label>
+              <div class="result"><span>Чистый доход в месяц</span><strong id="income">336 000₸</strong><small id="platform">Комиссия: 84 000₸</small></div>
+            </div>
+          </div>
+          <form class="panel form-grid" id="ownerForm">
+            <h2 class="wide">Добавить машину</h2>
+            <label class="field"><span>Название</span><input id="carName" value="Toyota Camry 70" /></label>
+            <label class="field"><span>Год</span><input id="carYear" type="number" value="2023" /></label>
+            <label class="field"><span>Город</span><select id="carCity"><option>Алматы</option><option>Астана</option><option>Шымкент</option><option>Актобе</option><option>Уральск</option><option>Атырау</option></select></label>
+            <label class="field"><span>Цена за минуту</span><input id="carRate" type="number" value="120" /></label>
+            <label class="field"><span>Мест</span><input id="carSeats" type="number" value="5" /></label>
+            <label class="field"><span>Режим</span><select id="carMode"><option value="city">Город</option><option value="weekend">Выходные</option><option value="event">Мероприятие</option><option value="delivery">Доставка</option></select></label>
+            <label class="field wide"><span>Фото URL</span><input id="carImage" value="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80" /></label>
+            <label class="field wide"><span>Удобства</span><input id="carFeatures" value="АКПП, Кондиционер, USB, Bluetooth" /></label>
+            <button class="btn primary full wide" type="submit"><i data-lucide="save"></i>Сохранить авто</button>
+          </form>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Кабинет владельца и demo-выплаты.</span></footer>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
