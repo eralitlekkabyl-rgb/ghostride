@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Детали авто - GhostRide</title>
+    <link rel="preconnect" href="https://commons.wikimedia.org" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="car-details">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="owners.html">Владельцам</a><a href="dashboard.html">Кабинет</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="log-in"></i><span data-auth-label>Войти</span></button><a class="btn primary" href="cars.html"><i data-lucide="car-front"></i>Каталог</a></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Карточка автомобиля</p>
+        <h1>Детали машины</h1>
+        <p class="lead">Фото, характеристики, условия аренды, правила владельца и переход к demo-бронированию.</p>
+      </section>
+      <section>
+        <div id="carDetails"></div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Подробная карточка demo-авто.</span></footer>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
