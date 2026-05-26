@@ -23,11 +23,15 @@
           <div class="panel" id="checkoutCar"></div>
           <div class="panel">
             <h2>Оплата</h2>
+            <label class="field">Дата поездки<input id="bookingDate" type="date" /></label>
+            <label class="field">Время начала<input id="bookingTime" type="time" /></label>
             <label class="field">Длительность<select id="duration"><option value="30">30 минут</option><option value="60">1 час</option><option value="120">2 часа</option><option value="1440">Weekend demo</option></select></label>
             <label class="field">Способ оплаты<select id="method"><option>Demo Card •••• 4242</option><option>Kaspi demo</option><option>Apple Pay demo</option></select></label>
             <label class="field">Номер карты<input value="4242 4242 4242 4242" /></label>
             <label class="field">Имя на карте<input value="DEMO USER" /></label>
+            <div class="availability" id="bookingStatus">Выберите дату и время.</div>
             <div class="result"><span>Итого к оплате</span><strong id="total">0₸</strong><small id="deposit">Депозит demo включен</small></div>
+            <p class="muted" id="timeSummary"></p>
             <button class="btn primary full" id="payBtn" type="button"><i data-lucide="credit-card"></i>Оплатить demo</button>
           </div>
         </div>
