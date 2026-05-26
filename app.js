@@ -700,11 +700,12 @@ function updateTotal() {
   const multiplier = duration >= 1440 ? 0.42 : 1;
   const discount = car.trust >= 95 ? 0.92 : car.trust >= 90 ? 0.96 : 1;
   const total = Math.round(car.rate * minutes * multiplier * discount);
-  $("#total").textContent = money(total);
-  $("#deposit").textContent = `Депозит demo: ${money(car.trust >= 95 ? 10000 : 18000)}`;
+  if ($("#total")) $("#total").textContent = money(total);
+  if ($("#deposit")) $("#deposit").textContent = `Депозит demo: ${money(car.trust >= 95 ? 10000 : 18000)}`;
   const status = $("#bookingStatus");
   const summary = $("#timeSummary");
   const payBtn = $("#payBtn");
+  if (!status || !summary || !payBtn) return;
   if (!range) {
     status.textContent = "Выберите дату и время.";
     status.className = "availability";
@@ -843,16 +844,16 @@ function initPage() {
   if (page === "owners") {
     renderCalculator();
     $("#ownerForm").onsubmit = addCar;
-    $("#carGallery").onchange = handleCarPhotoFile;
-    $("#carCamera").onchange = handleCarPhotoFile;
+    if ($("#carGallery")) $("#carGallery").onchange = handleCarPhotoFile;
+    if ($("#carCamera")) $("#carCamera").onchange = handleCarPhotoFile;
   }
   if (page === "car-details") renderCarDetails();
   if (page === "checkout") {
     renderCheckout();
-    $("#duration").onchange = updateTotal;
-    $("#bookingDate").onchange = updateTotal;
-    $("#bookingTime").onchange = updateTotal;
-    $("#payBtn").onclick = payBooking;
+    if ($("#duration")) $("#duration").onchange = updateTotal;
+    if ($("#bookingDate")) $("#bookingDate").onchange = updateTotal;
+    if ($("#bookingTime")) $("#bookingTime").onchange = updateTotal;
+    if ($("#payBtn")) $("#payBtn").onclick = payBooking;
   }
   if (page === "dashboard") renderDashboard();
 }
