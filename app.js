@@ -217,7 +217,7 @@ const DEFAULT_CARS = [
 const DEFAULT_BY_ID = Object.fromEntries(DEFAULT_CARS.map((car) => [car.id, car]));
 
 function normalizeCar(car) {
-  const defaults = DEFAULT_BY_ID[car.id] || DEFAULT_CARS.find((item) => item.name === car.name);
+  const defaults = DEFAULT_BY_ID[car.id];
   const fallbackSpecs = {
     body: "Седан",
     transmission: car.features?.find((item) => item.includes("АКПП")) ? "Автомат" : "Уточняется",
@@ -278,6 +278,96 @@ let state = {
   city: "Все",
   mode: "all"
 };
+
+let selectedCarPhoto = "";
+
+function localDateValue(date = new Date()) {
+  const copy = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return copy.toISOString().slice(0, 10);
+}
+
+function localTimeValue(date = new Date(Date.now() + 30 * 60000)) {
+  const minutes = Math.ceil(date.getMinutes() / 15) * 15;
+  date.setMinutes(minutes, 0, 0);
+  return date.toTimeString().slice(0, 5);
+}
+
+function bookingDurationMinutes() {
+  const duration = Number($("#duration")?.value || 30);
+  return duration >= 1440 ? 2880 : duration;
+}
+
+function selectedBookingRange() {
+  const date = $("#bookingDate")?.value;
+  const time = $("#bookingTime")?.value;
+  if (!date || !time) return null;
+  const start = new Date(`${date}T${time}`);
+  if (Number.isNaN(start.getTime())) return null;
+  const end = new Date(start.getTime() + bookingDurationMinutes() * 60000);
+  return { start, end };
+}
+
+function bookingRange(booking) {
+  if (!booking.startAt || !booking.endAt) return null;
+  const start = new Date(booking.startAt);
+  const end = new Date(booking.endAt);
+  if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return null;
+  return { start, end };
+}
+
+function isActiveBooking(booking) {
+  if (booking.cancelled) return false;
+  const range = bookingRange(booking);
+  if (!range) return true;
+  return range.end.getTime() > Date.now();
+}
+
+function bookingOverlaps(booking, start, end) {
+  if (!isActiveBooking(booking)) return false;
+  const range = bookingRange(booking);
+  if (!range) return true;
+  return start < range.end && end > range.start;
+}
+
+function bookingsForCar(carId) {
+  return state.bookings.filter((booking) => booking.carId === carId && isActiveBooking(booking));
+}
+
+function nextBookingForCar(carId) {
+  return bookingsForCar(carId).sort((a, b) => {
+    const aTime = bookingRange(a)?.start.getTime() || 0;
+    const bTime = bookingRange(b)?.start.getTime() || 0;
+    return aTime - bTime;
+  })[0];
+}
+
+function hasBookingConflict(carId, start, end) {
+  return state.bookings.some((booking) => booking.carId === carId && bookingOverlaps(booking, start, end));
+}
+
+function formatDateTime(value) {
+  if (!value) return "";
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return new Intl.DateTimeFormat("ru-KZ", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }).format(date);
+}
+
+function formatBookingPeriod(booking) {
+  const range = bookingRange(booking);
+  if (!range) return booking.date || "Время не указано";
+  return `${formatDateTime(range.start)} - ${formatDateTime(range.end)}`;
+}
+
+function carStatus(car) {
+  const booking = nextBookingForCar(car.id);
+  if (!booking) return { busy: false, label: "Свободно", meta: "Можно бронировать" };
+  const range = bookingRange(booking);
+  return {
+    busy: true,
+    label: "Занято",
+    meta: range ? `до ${formatDateTime(range.end)}` : "бронь активна"
+  };
+}
 
 function persist() {
   write("gr_user", state.user);
@@ -382,17 +472,18 @@ function visibleCars() {
 }
 
 function carCard(car) {
+  const status = carStatus(car);
   return `
-    <article class="card">
+    <article class="card ${status.busy ? "occupied" : ""}">
       <div class="pic">
         <img src="${car.image}" alt="${car.name}" />
         <span class="badge rate">${car.rate}₸/мин</span>
-        <span class="badge trust">Trust ${car.trust}</span>
+        <span class="badge trust">${status.busy ? "Занято" : `Trust ${car.trust}`}</span>
       </div>
       <div class="card-body">
         <div class="split"><div><h3>${car.name}</h3><p class="muted">${car.year} - ${car.owner}</p></div><strong>${car.distance}</strong></div>
-        <div class="tags"><span class="tag">${car.city}</span><span class="tag">${car.seats} мест</span>${car.features.slice(0, 4).map((item) => `<span class="tag">${item}</span>`).join("")}</div>
-        <div class="card-actions"><a class="btn primary" href="checkout.html?car=${car.id}"><i data-lucide="calendar-check"></i>Забронировать</a><a class="btn" href="car-details.html?car=${car.id}"><i data-lucide="eye"></i>Детали</a></div>
+        <div class="tags"><span class="tag">${car.city}</span><span class="tag ${status.busy ? "danger" : "good"}">${status.label} ${status.busy ? status.meta : ""}</span><span class="tag">${car.seats} мест</span>${car.features.slice(0, 4).map((item) => `<span class="tag">${item}</span>`).join("")}</div>
+        <div class="card-actions">${status.busy ? `<button class="btn primary" disabled type="button"><i data-lucide="lock"></i>Занято</button>` : `<a class="btn primary" href="checkout.html?car=${car.id}"><i data-lucide="calendar-check"></i>Забронировать</a>`}<a class="btn" href="car-details.html?car=${car.id}"><i data-lucide="eye"></i>Детали</a></div>
       </div>
     </article>
   `;
@@ -430,6 +521,7 @@ function addCar(event) {
   requireUser(() => {
     const name = $("#carName").value.trim();
     if (!name) return toast("Введите название авто.");
+    const image = selectedCarPhoto || $("#carImage").value.trim() || DEFAULT_CARS[1].image;
     state.cars.unshift(normalizeCar({
       id: `car-${Date.now()}`,
       name,
@@ -442,13 +534,58 @@ function addCar(event) {
       seats: Number($("#carSeats").value) || 5,
       owner: state.user.name,
       ownerId: state.user.id,
-      image: $("#carImage").value.trim() || DEFAULT_CARS[1].image,
+      image,
+      imageSource: selectedCarPhoto ? "" : $("#carImage").value.trim(),
+      photoCredit: selectedCarPhoto ? "Фото владельца" : "Фото по ссылке",
       features: $("#carFeatures").value.split(",").map((item) => item.trim()).filter(Boolean)
     }));
+    selectedCarPhoto = "";
     persist();
     toast("Машина добавлена в каталог.");
     setTimeout(() => location.href = "cars.html", 600);
   });
+}
+
+function resizeImageFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error("Не получилось прочитать фото."));
+    reader.onload = () => {
+      const image = new Image();
+      image.onerror = () => reject(new Error("Не получилось открыть фото."));
+      image.onload = () => {
+        const maxWidth = 1200;
+        const scale = Math.min(1, maxWidth / image.width);
+        const canvas = document.createElement("canvas");
+        canvas.width = Math.round(image.width * scale);
+        canvas.height = Math.round(image.height * scale);
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL("image/jpeg", 0.82));
+      };
+      image.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+async function handleCarPhotoFile(event) {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  if (!file.type.startsWith("image/")) {
+    toast("Выберите файл изображения.");
+    return;
+  }
+  try {
+    selectedCarPhoto = await resizeImageFile(file);
+    $("#carPhotoPreview").src = selectedCarPhoto;
+    $("#carPhotoPreview").hidden = false;
+    $("#carPhotoNote").textContent = "Фото готово. Оно сохранится вместе с машиной.";
+    $("#carImage").value = "";
+  } catch (error) {
+    selectedCarPhoto = "";
+    toast(error.message || "Фото не загрузилось.");
+  }
 }
 
 function checkoutCar() {
@@ -463,6 +600,7 @@ function specTile(label, value) {
 function renderCarDetails() {
   const car = checkoutCar();
   const specs = car.specs || {};
+  const status = carStatus(car);
   $("#carDetails").innerHTML = `
     <div class="detail-layout">
       <div>
@@ -480,11 +618,12 @@ function renderCarDetails() {
         <p class="lead">${car.description}</p>
         <div class="tags">
           <span class="tag">${car.year}</span>
+          <span class="tag ${status.busy ? "danger" : "good"}">${status.label} ${status.busy ? status.meta : ""}</span>
           <span class="tag">${car.seats} мест</span>
           ${car.features.map((item) => `<span class="tag">${item}</span>`).join("")}
         </div>
         <div class="detail-actions">
-          <a class="btn primary" href="checkout.html?car=${car.id}"><i data-lucide="calendar-check"></i>Забронировать</a>
+          ${status.busy ? `<button class="btn primary" disabled type="button"><i data-lucide="lock"></i>Занято</button>` : `<a class="btn primary" href="checkout.html?car=${car.id}"><i data-lucide="calendar-check"></i>Забронировать</a>`}
           <a class="btn" href="cars.html"><i data-lucide="arrow-left"></i>Назад</a>
         </div>
       </aside>
@@ -508,6 +647,7 @@ function renderCarDetails() {
       <article class="panel detail-section">
         <div class="section-head compact"><div><p class="eyebrow">Аренда</p><h2>Условия</h2></div></div>
         <div class="line"><div><strong>Владелец</strong><p>${car.owner}</p></div><span class="status">Проверен</span></div>
+        <div class="line"><div><strong>Статус</strong><p>${status.busy ? status.meta : "Свободна для бронирования"}</p></div><span class="status ${status.busy ? "danger" : ""}">${status.label}</span></div>
         <div class="line"><div><strong>Локация</strong><p>${specs.location}</p></div><span class="status">${car.distance}</span></div>
         <div class="line"><div><strong>Доступность</strong><p>${specs.available}</p></div><span class="status">Online</span></div>
         <div class="line"><div><strong>Телематика</strong><p>${specs.smartLock}</p></div><span class="status">${specs.plate}</span></div>
@@ -529,6 +669,13 @@ function renderCarDetails() {
 
 function renderCheckout() {
   const car = checkoutCar();
+  const dateInput = $("#bookingDate");
+  const timeInput = $("#bookingTime");
+  if (dateInput && !dateInput.value) {
+    dateInput.value = localDateValue();
+    dateInput.min = localDateValue();
+  }
+  if (timeInput && !timeInput.value) timeInput.value = localTimeValue();
   $("#checkoutCar").innerHTML = `
     <div class="checkout-photo"><img src="${car.image}" alt="${car.name}" /></div>
     <div class="payment-card">
@@ -547,6 +694,7 @@ function renderCheckout() {
 
 function updateTotal() {
   const car = checkoutCar();
+  const range = selectedBookingRange();
   const duration = Number($("#duration").value);
   const minutes = duration >= 1440 ? 2880 : duration;
   const multiplier = duration >= 1440 ? 0.42 : 1;
@@ -554,12 +702,38 @@ function updateTotal() {
   const total = Math.round(car.rate * minutes * multiplier * discount);
   $("#total").textContent = money(total);
   $("#deposit").textContent = `Депозит demo: ${money(car.trust >= 95 ? 10000 : 18000)}`;
+  const status = $("#bookingStatus");
+  const summary = $("#timeSummary");
+  const payBtn = $("#payBtn");
+  if (!range) {
+    status.textContent = "Выберите дату и время.";
+    status.className = "availability";
+    summary.textContent = "";
+    payBtn.disabled = true;
+    return;
+  }
+  summary.textContent = `Период брони: ${formatDateTime(range.start)} - ${formatDateTime(range.end)}`;
+  const inPast = range.start.getTime() < Date.now() - 60000;
+  const conflict = hasBookingConflict(car.id, range.start, range.end);
+  payBtn.disabled = inPast || conflict;
+  status.className = `availability ${inPast || conflict ? "busy" : "free"}`;
+  if (inPast) {
+    status.textContent = "Это время уже прошло. Выберите другое время.";
+  } else if (conflict) {
+    status.textContent = "Занято на это время. Выберите другой слот.";
+  } else {
+    status.textContent = "Свободно. Можно бронировать.";
+  }
 }
 
 function payBooking() {
   requireUser(() => {
     const car = checkoutCar();
     const duration = $("#duration");
+    const range = selectedBookingRange();
+    if (!range) return toast("Укажите дату и время брони.");
+    if (range.start.getTime() < Date.now() - 60000) return toast("Выберите будущее время.");
+    if (hasBookingConflict(car.id, range.start, range.end)) return toast("Эта машина уже занята на выбранное время.");
     const total = Number($("#total").textContent.replace(/[^0-9]/g, "")) || 0;
     state.bookings.unshift({
       id: `booking-${Date.now()}`,
@@ -568,7 +742,10 @@ function payBooking() {
       total,
       method: $("#method").value,
       duration: duration.options[duration.selectedIndex].text,
-      date: new Date().toLocaleDateString("ru-KZ")
+      date: new Date().toLocaleDateString("ru-KZ"),
+      startAt: range.start.toISOString(),
+      endAt: range.end.toISOString(),
+      status: "active"
     });
     persist();
     toast(`Оплата прошла. ${car.name} забронирована.`);
@@ -576,8 +753,40 @@ function payBooking() {
   });
 }
 
-function line(title, text, status) {
-  return `<div class="line"><div><strong>${title}</strong><p>${text}</p></div><span class="status">${status}</span></div>`;
+function line(title, text, status, action = "") {
+  return `<div class="line"><div><strong>${title}</strong><p>${text}</p></div><div class="line-actions"><span class="status">${status}</span>${action}</div></div>`;
+}
+
+function removeBooking(id) {
+  requireUser(() => {
+    const booking = state.bookings.find((item) => item.id === id);
+    if (!booking) return;
+    const car = state.cars.find((item) => item.id === booking.carId);
+    if (booking.userId !== state.user.id && car?.ownerId !== state.user.id) {
+      toast("Можно удалить только свою бронь.");
+      return;
+    }
+    state.bookings = state.bookings.filter((item) => item.id !== id);
+    persist();
+    renderDashboard();
+    toast("Бронь удалена. Машина снова свободна.");
+  });
+}
+
+function removeCar(id) {
+  requireUser(() => {
+    const car = state.cars.find((item) => item.id === id);
+    if (!car) return;
+    if (car.ownerId !== state.user.id) {
+      toast("Можно удалить только свою машину.");
+      return;
+    }
+    state.cars = state.cars.filter((item) => item.id !== id);
+    state.bookings = state.bookings.filter((booking) => booking.carId !== id);
+    persist();
+    renderDashboard();
+    toast("Машина и связанные брони удалены.");
+  });
 }
 
 function renderDashboard() {
@@ -596,11 +805,27 @@ function renderDashboard() {
   const payout = gross - fee;
 
   $("#bookingList").innerHTML = myBookings.length
-    ? myBookings.map((booking) => line(state.cars.find((car) => car.id === booking.carId)?.name || "Авто", `${booking.duration} - ${booking.method} - ${booking.date}`, money(booking.total))).join("")
+    ? myBookings.map((booking) => {
+        const car = state.cars.find((item) => item.id === booking.carId);
+        return line(
+          car?.name || "Авто",
+          `${formatBookingPeriod(booking)} - ${booking.duration} - ${booking.method}`,
+          money(booking.total),
+          `<button class="btn danger compact-btn" data-remove-booking="${booking.id}" type="button"><i data-lucide="trash-2"></i>Удалить</button>`
+        );
+      }).join("")
     : `<div class="empty">Броней пока нет.</div>`;
 
   $("#ownerList").innerHTML = myCars.length
-    ? myCars.map((car) => line(car.name, `${car.city} - ${car.rate}₸/мин - Trust ${car.trust}`, "Активно")).join("")
+    ? myCars.map((car) => {
+        const status = carStatus(car);
+        return line(
+          car.name,
+          `${car.city} - ${car.rate}₸/мин - ${status.busy ? status.meta : `Trust ${car.trust}`}`,
+          status.label,
+          `<button class="btn danger compact-btn" data-remove-car="${car.id}" type="button"><i data-lucide="trash-2"></i>Удалить</button>`
+        );
+      }).join("")
     : `<div class="empty">У вас пока нет авто.</div>`;
 
   $("#walletList").innerHTML =
@@ -618,11 +843,15 @@ function initPage() {
   if (page === "owners") {
     renderCalculator();
     $("#ownerForm").onsubmit = addCar;
+    $("#carGallery").onchange = handleCarPhotoFile;
+    $("#carCamera").onchange = handleCarPhotoFile;
   }
   if (page === "car-details") renderCarDetails();
   if (page === "checkout") {
     renderCheckout();
     $("#duration").onchange = updateTotal;
+    $("#bookingDate").onchange = updateTotal;
+    $("#bookingTime").onchange = updateTotal;
     $("#payBtn").onclick = payBooking;
   }
   if (page === "dashboard") renderDashboard();
@@ -635,6 +864,8 @@ document.addEventListener("click", (event) => {
   const mode = event.target.closest("[data-mode]");
   const info = event.target.closest("[data-info]");
   const tab = event.target.closest("[data-view]");
+  const removeBookingBtn = event.target.closest("[data-remove-booking]");
+  const removeCarBtn = event.target.closest("[data-remove-car]");
   if (authOpen) openAuth();
   if (authClose) closeAuth();
   if (city) { state.city = city.dataset.city; renderCarsPage(); }
@@ -647,6 +878,8 @@ document.addEventListener("click", (event) => {
     $$(".tab").forEach((button) => button.classList.toggle("active", button === tab));
     $$(".view").forEach((view) => view.classList.toggle("active", view.id === tab.dataset.view));
   }
+  if (removeBookingBtn) removeBooking(removeBookingBtn.dataset.removeBooking);
+  if (removeCarBtn) removeCar(removeCarBtn.dataset.removeCar);
 });
 
 document.addEventListener("input", (event) => {
