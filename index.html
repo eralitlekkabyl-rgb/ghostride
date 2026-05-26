@@ -3,556 +3,82 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>GhostRide Kazakhstan - народный каршеринг</title>
-    <meta name="description" content="GhostRide Kazakhstan: MVP сайта и web app для народного каршеринга по Казахстану." />
+    <title>GhostRide Kazakhstan</title>
+    <meta name="description" content="GhostRide Kazakhstan - народный P2P каршеринг." />
     <link rel="preconnect" href="https://images.unsplash.com" />
     <link rel="preconnect" href="https://unpkg.com" />
-    <style>
-:root {
-  color-scheme: light;
-  --ink: #15171a;
-  --muted: #65707c;
-  --line: #dfe5ea;
-  --soft: #f3f6f7;
-  --white: #ffffff;
-  --green: #1f8a70;
-  --green-dark: #126452;
-  --blue: #2364aa;
-  --shadow: 0 24px 70px rgba(26, 39, 55, 0.16);
-  --radius: 8px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-}
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { margin: 0; background: var(--white); color: var(--ink); letter-spacing: 0; }
-a { color: inherit; text-decoration: none; }
-button, input, select { font: inherit; }
-.topbar {
-  position: sticky; top: 0; z-index: 20; display: grid; grid-template-columns: auto 1fr auto;
-  align-items: center; gap: 24px; min-height: 72px; padding: 12px clamp(18px, 4vw, 56px);
-  border-bottom: 1px solid rgba(223,229,234,.8); background: rgba(255,255,255,.88); backdrop-filter: blur(16px);
-}
-.brand, .topbar-cta, .primary-button, .secondary-button, .booking-button { display: inline-flex; align-items: center; justify-content: center; gap: 10px; }
-.brand { min-width: 178px; }
-.brand-mark { display: grid; place-items: center; width: 42px; height: 42px; border-radius: var(--radius); background: var(--ink); color: var(--white); font-weight: 800; }
-.brand strong, .brand small { display: block; line-height: 1.1; }
-.brand small { color: var(--muted); font-size: 12px; }
-.nav-links { display: flex; justify-content: center; gap: 24px; color: var(--muted); font-size: 14px; }
-.nav-links a:hover { color: var(--ink); }
-.topbar-cta, .primary-button, .booking-button { min-height: 44px; border: 0; border-radius: var(--radius); background: var(--green); color: var(--white); cursor: pointer; font-weight: 800; }
-.topbar-cta { padding: 0 16px; }
-.topbar-cta svg, .primary-button svg, .secondary-button svg, .booking-button svg { width: 18px; height: 18px; }
-.app-hero {
-  display: grid; grid-template-columns: minmax(0,1fr) minmax(320px,440px); align-items: center; gap: clamp(28px, 6vw, 72px);
-  min-height: calc(100vh - 72px); padding: clamp(38px, 6vw, 78px) clamp(18px, 6vw, 80px) 42px;
-  background: linear-gradient(100deg, rgba(255,255,255,.94), rgba(255,255,255,.72)), url("https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1800&q=80") center/cover;
-}
-.eyebrow { margin: 0 0 12px; color: var(--green-dark); font-size: 13px; font-weight: 900; text-transform: uppercase; }
-.hero-copy h1, .section-heading h2, .owner-copy h2, .launch-card h2 { margin: 0; max-width: 790px; font-size: clamp(40px, 6vw, 82px); line-height: .98; letter-spacing: 0; }
-.section-heading h2, .owner-copy h2, .launch-card h2 { font-size: clamp(30px, 4vw, 56px); }
-.hero-text, .section-heading p, .owner-copy > p, .launch-card > p { max-width: 660px; color: var(--muted); font-size: clamp(16px, 2vw, 20px); line-height: 1.6; }
-.hero-actions, .hero-stats { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-.primary-button, .secondary-button { min-width: 158px; min-height: 50px; padding: 0 18px; }
-.secondary-button { border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); color: var(--ink); font-weight: 800; }
-.hero-stats { margin-top: 32px; }
-.hero-stats span { display: grid; gap: 4px; min-width: 132px; padding: 14px 16px; border: 1px solid rgba(223,229,234,.9); border-radius: var(--radius); background: rgba(255,255,255,.78); color: var(--muted); font-size: 13px; }
-.hero-stats strong { color: var(--ink); font-size: 20px; }
-.phone-shell { overflow: hidden; width: min(100%, 430px); min-height: 630px; margin-left: auto; border: 10px solid var(--ink); border-radius: 34px; background: #eef3f5; box-shadow: var(--shadow); }
-.phone-status { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; min-height: 48px; padding: 0 18px; background: var(--ink); color: var(--white); font-size: 13px; font-weight: 800; }
-.phone-status span:nth-child(2) { justify-self: center; }
-.phone-status svg { justify-self: end; width: 17px; }
-.mini-map { position: relative; min-height: 390px; background: #cfd9df; }
-.mini-map::after { position: absolute; inset: 0; content: ""; background: linear-gradient(180deg, rgba(21,23,26,.08), rgba(21,23,26,.35)); pointer-events: none; }
-.mini-map img { width: 100%; height: 390px; object-fit: cover; filter: saturate(.92) contrast(1.06); }
-.car-pin { position: absolute; z-index: 2; display: grid; place-items: center; min-width: 62px; height: 36px; padding: 0 10px; border: 2px solid var(--white); border-radius: 999px; background: var(--ink); color: var(--white); box-shadow: 0 14px 28px rgba(0,0,0,.25); cursor: pointer; font-size: 13px; font-weight: 900; transform: translate(-50%, -50%); }
-.car-pin.active { background: var(--green); }
-.ride-card { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin: 18px; padding: 18px; border-radius: var(--radius); background: var(--white); box-shadow: 0 16px 40px rgba(24,41,56,.1); }
-.ride-card p, .details-title p { margin: 0 0 4px; color: var(--muted); font-size: 12px; font-weight: 800; text-transform: uppercase; }
-.ride-card h2, .details-title h3, .calculator h3, .feature-grid h3, .step-list h3 { margin: 0; }
-.ride-card strong { color: var(--green-dark); }
-.workspace, .ai-section { padding: 84px clamp(18px, 5vw, 72px); }
-.section-heading { margin-bottom: 28px; }
-.app-grid { display: grid; grid-template-columns: 280px minmax(280px, 1fr) 360px; align-items: start; gap: 18px; }
-.control-panel, .details-panel, .calculator, .launch-card { border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); box-shadow: 0 16px 46px rgba(26,39,55,.08); }
-.control-panel { display: grid; gap: 18px; padding: 18px; }
-.field, .calculator label { display: grid; gap: 10px; color: var(--muted); font-size: 14px; font-weight: 800; }
-.field select { width: 100%; min-height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); color: var(--ink); }
-.segmented { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
-.segmented button { min-height: 38px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--soft); color: var(--muted); cursor: pointer; font-size: 13px; font-weight: 900; }
-.segmented button.active { border-color: var(--green); background: rgba(31,138,112,.11); color: var(--green-dark); }
-input[type="range"] { width: 100%; accent-color: var(--green); }
-.switch-row { display: flex; align-items: center; gap: 10px; color: var(--ink); font-size: 14px; font-weight: 800; }
-.switch-row input { width: 18px; height: 18px; accent-color: var(--green); }
-.price-box, .calculator-result { display: grid; gap: 6px; padding: 16px; border-radius: var(--radius); background: #10251f; color: var(--white); }
-.price-box span, .calculator-result span { color: rgba(255,255,255,.72); font-size: 13px; font-weight: 800; }
-.price-box strong, .calculator-result strong { font-size: 28px; }
-.price-box small, .calculator-result small { color: rgba(255,255,255,.68); }
-.car-list { display: grid; gap: 12px; }
-.car-card { display: grid; grid-template-columns: 112px minmax(0,1fr) auto; gap: 14px; align-items: center; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); cursor: pointer; transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease; }
-.car-card:hover, .car-card.active { border-color: rgba(31,138,112,.45); box-shadow: 0 16px 40px rgba(26,39,55,.1); transform: translateY(-2px); }
-.car-card img { width: 112px; height: 82px; border-radius: var(--radius); object-fit: cover; }
-.car-card h3 { margin: 0 0 6px; font-size: 18px; }
-.car-meta { display: flex; flex-wrap: wrap; gap: 8px; color: var(--muted); font-size: 13px; }
-.car-meta span { padding: 5px 8px; border-radius: 999px; background: var(--soft); }
-.car-price { display: grid; justify-items: end; gap: 6px; white-space: nowrap; }
-.car-price strong { font-size: 20px; }
-.car-price span { color: var(--muted); font-size: 12px; }
-.details-panel { overflow: hidden; }
-.details-panel img { width: 100%; height: 220px; object-fit: cover; }
-.details-body { display: grid; gap: 18px; padding: 18px; }
-.details-title { display: flex; justify-content: space-between; gap: 18px; align-items: start; }
-.details-title span { padding: 8px 10px; border-radius: var(--radius); background: rgba(35,100,170,.1); color: var(--blue); font-size: 14px; font-weight: 900; white-space: nowrap; }
-.detail-metrics { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 0; }
-.detail-metrics div { display: grid; gap: 4px; padding: 12px; border-radius: var(--radius); background: var(--soft); }
-.detail-metrics dt { color: var(--muted); font-size: 12px; }
-.detail-metrics dd { margin: 0; font-weight: 900; }
-.booking-button { width: 100%; min-height: 52px; }
-.owner-section { display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,430px); gap: clamp(22px, 5vw, 70px); align-items: start; padding: 84px clamp(18px, 5vw, 72px); background: var(--soft); }
-.step-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 30px; }
-.step-list article, .feature-grid article { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--white); }
-.step-list span { display: inline-grid; place-items: center; width: 36px; height: 36px; margin-bottom: 18px; border-radius: var(--radius); background: var(--ink); color: var(--white); font-size: 13px; font-weight: 900; }
-.step-list p, .feature-grid p { color: var(--muted); line-height: 1.55; }
-.calculator { display: grid; gap: 20px; padding: 22px; }
-.feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.feature-grid svg { width: 38px; height: 38px; margin-bottom: 20px; color: var(--green); }
-.launch-section { padding: 40px clamp(18px, 5vw, 72px) 84px; }
-.launch-card { padding: clamp(24px, 4vw, 46px); background: linear-gradient(90deg, rgba(16,37,31,.92), rgba(20,56,85,.74)), url("https://images.unsplash.com/photo-1485738422979-f5c462d49f74?auto=format&fit=crop&w=1600&q=80") center/cover; color: var(--white); }
-.launch-card .eyebrow, .launch-card p { color: rgba(255,255,255,.78); }
-.launch-flow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; }
-.launch-flow span { padding: 10px 12px; border: 1px solid rgba(255,255,255,.28); border-radius: var(--radius); background: rgba(255,255,255,.1); font-weight: 900; }
-.toast { position: fixed; right: 20px; bottom: 20px; z-index: 50; max-width: min(360px, calc(100vw - 40px)); padding: 14px 16px; border-radius: var(--radius); background: var(--ink); color: var(--white); box-shadow: var(--shadow); opacity: 0; pointer-events: none; transform: translateY(16px); transition: opacity .2s ease, transform .2s ease; }
-.toast.visible { opacity: 1; transform: translateY(0); }
-@media (max-width: 1180px) {
-  .app-grid { grid-template-columns: 270px minmax(300px, 1fr); }
-  .details-panel { grid-column: 1 / -1; display: grid; grid-template-columns: 340px 1fr; }
-  .details-panel img { height: 100%; min-height: 260px; }
-}
-@media (max-width: 900px) {
-  .topbar { grid-template-columns: 1fr auto; }
-  .nav-links { display: none; }
-  .app-hero, .owner-section { grid-template-columns: 1fr; }
-  .phone-shell { margin: 0; }
-  .app-grid { grid-template-columns: 1fr; }
-  .details-panel { display: block; }
-  .step-list, .feature-grid { grid-template-columns: 1fr; }
-}
-@media (max-width: 620px) {
-  .topbar { min-height: 64px; padding: 10px 14px; }
-  .brand { min-width: 0; }
-  .brand small, .topbar-cta { display: none; }
-  .app-hero { min-height: auto; padding-top: 34px; }
-  .hero-copy h1 { font-size: 42px; }
-  .phone-shell { min-height: 560px; border-width: 7px; border-radius: 28px; }
-  .mini-map, .mini-map img { min-height: 330px; height: 330px; }
-  .hero-stats span { flex: 1 1 140px; }
-  .car-card { grid-template-columns: 92px minmax(0, 1fr); }
-  .car-card img { width: 92px; height: 78px; }
-  .car-price { grid-column: 1 / -1; grid-template-columns: 1fr auto; justify-items: start; }
-  .detail-metrics { grid-template-columns: 1fr; }
-}
-
-</style>
+    <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>
+  <body data-page="home">
     <header class="topbar">
-      <a class="brand" href="#app" aria-label="GhostRide Kazakhstan">
-        <span class="brand-mark">G</span>
-        <span><strong>GhostRide</strong><small>Kazakhstan</small></span>
-      </a>
-      <nav class="nav-links" aria-label="Главное меню">
-        <a href="#cars">Авто</a>
-        <a href="#owners">Владельцам</a>
-        <a href="#ai">AI</a>
-        <a href="#launch">MVP</a>
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav">
+        <a href="cars.html">Автомобили</a>
+        <a href="owners.html">Владельцам</a>
+        <a href="dashboard.html">Кабинет</a>
       </nav>
-      <a class="topbar-cta" href="#owners"><i data-lucide="key-round" aria-hidden="true"></i>Сдать авто</a>
+      <div class="top-actions">
+        <button class="btn" data-auth-open type="button"><i data-lucide="log-in"></i><span data-auth-label>Войти</span></button>
+        <a class="btn primary" href="cars.html"><i data-lucide="map-pin"></i>Начать</a>
+      </div>
     </header>
 
     <main>
-      <section class="app-hero" id="app" aria-labelledby="hero-title">
-        <div class="hero-copy">
+      <section class="hero">
+        <div>
           <p class="eyebrow">Народный каршеринг Казахстана</p>
-          <h1 id="hero-title">Машина должна зарабатывать.</h1>
-          <p class="hero-text">Платформа, где владельцы подключают свои простаивающие автомобили, а пользователи открывают ближайшую машину со смартфона и едут по минутам, часам или на выходные.</p>
+          <h1>Машина должна зарабатывать</h1>
+          <p class="lead">P2P каршеринг с входом, каталогом авто, добавлением своей машины, demo-бронью, demo-оплатой, выплатами владельцу и AI Trust Score.</p>
           <div class="hero-actions">
-            <a class="primary-button" href="#cars"><i data-lucide="map-pin" aria-hidden="true"></i>Найти авто</a>
-            <a class="secondary-button" href="#owners"><i data-lucide="wallet-cards" aria-hidden="true"></i>Рассчитать доход</a>
+            <a class="btn primary" href="cars.html"><i data-lucide="car-front"></i>Найти машину</a>
+            <a class="btn" href="owners.html"><i data-lucide="plus-circle"></i>Сдать авто</a>
           </div>
-          <div class="hero-stats" aria-label="Ключевые показатели MVP">
-            <span><strong>20-50</strong> машин на старт</span>
-            <span><strong>15-30%</strong> комиссия</span>
-            <span><strong>4</strong> режима аренды</span>
+          <div class="stats">
+            <div><strong id="homeCars">0</strong><span>авто в каталоге</span></div>
+            <div><strong id="homeBookings">0</strong><span>demo-броней</span></div>
+            <div><strong>15-30%</strong><span>комиссия</span></div>
+            <div><strong>AI</strong><span>Trust Score</span></div>
           </div>
         </div>
 
-        <div class="phone-shell" aria-label="Интерфейс приложения GhostRide">
-          <div class="phone-status"><span>09:41</span><span>GhostRide</span><i data-lucide="signal" aria-hidden="true"></i></div>
-          <div class="mini-map" id="miniMap">
-            <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80" alt="Городская улица с автомобилями" />
-            <button class="car-pin active" style="left:22%;top:38%" data-car-id="elantra"><span>₸95</span></button>
-            <button class="car-pin" style="left:62%;top:30%" data-car-id="camry"><span>₸145</span></button>
-            <button class="car-pin" style="left:48%;top:68%" data-car-id="sportage"><span>₸130</span></button>
-            <button class="car-pin" style="left:75%;top:58%" data-car-id="leaf"><span>₸80</span></button>
+        <div class="phone-preview">
+          <div class="phone-top"><span>09:41</span><strong>GhostRide</strong><i data-lucide="signal"></i></div>
+          <div class="map-preview">
+            <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80" alt="Городская улица" />
+            <span class="pin active" style="left:22%;top:38%">95₸</span>
+            <span class="pin" style="left:62%;top:30%">145₸</span>
+            <span class="pin" style="left:48%;top:68%">120₸</span>
+            <span class="pin" style="left:76%;top:58%">80₸</span>
           </div>
-          <div class="ride-card" id="activeRideCard"><div><p>Ближайшая машина</p><h2>Hyundai Elantra</h2></div><strong>240 м</strong></div>
+          <div class="preview-card">
+            <p>Ближайшая машина</p>
+            <h2 id="homePreviewCar">Hyundai Elantra</h2>
+            <div class="mini-grid"><span>Trust 92</span><span>Demo Pay</span><span>App Unlock</span></div>
+          </div>
         </div>
       </section>
 
-      <section class="workspace" id="cars" aria-labelledby="cars-title">
-        <div class="section-heading">
-          <p class="eyebrow">MVP web app</p>
-          <h2 id="cars-title">Найти, забронировать и открыть авто</h2>
-          <p>Ниже готовый прототип логики: фильтры города, режим аренды, выбор машины, расчет цены и Trust Score.</p>
-        </div>
-
-        <div class="app-grid">
-          <aside class="control-panel" aria-label="Фильтры поиска">
-            <label class="field"><span>Город</span><select id="citySelect"><option value="almaty">Алматы</option><option value="astana">Астана</option><option value="uralsk">Уральск</option><option value="atyrau">Атырау</option></select></label>
-            <div class="field"><span>Режим</span><div class="segmented" id="modeTabs" role="tablist" aria-label="Режим аренды"><button class="active" data-mode="city" type="button">City</button><button data-mode="weekend" type="button">Weekend</button><button data-mode="event" type="button">Event</button><button data-mode="delivery" type="button">Delivery</button></div></div>
-            <label class="field"><span>Время аренды: <strong id="durationValue">45 мин</strong></span><input id="durationRange" type="range" min="15" max="480" step="15" value="45" /></label>
-            <label class="switch-row"><input id="premiumToggle" type="checkbox" /><span>Показать премиум авто</span></label>
-            <div class="price-box"><span>Итого за поездку</span><strong id="tripTotal">₸4 275</strong><small id="tripNote">Скидка Trust Score уже применена</small></div>
-          </aside>
-
-          <div class="car-list" id="carList" aria-live="polite"></div>
-
-          <aside class="details-panel" aria-label="Детали автомобиля">
-            <img id="selectedCarImage" src="https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=900&q=80" alt="Выбранный автомобиль" />
-            <div class="details-body">
-              <div class="details-title"><div><p id="selectedCarCity">Алматы</p><h3 id="selectedCarName">Hyundai Elantra</h3></div><span id="selectedCarRate">₸95/мин</span></div>
-              <dl class="detail-metrics"><div><dt>Trust</dt><dd id="trustScore">92</dd></div><div><dt>До авто</dt><dd id="distanceValue">240 м</dd></div><div><dt>Депозит</dt><dd id="depositValue">₸15 000</dd></div></dl>
-              <button class="booking-button" id="bookButton" type="button"><i data-lucide="unlock" aria-hidden="true"></i>Забронировать и открыть</button>
-            </div>
-          </aside>
-        </div>
-      </section>
-
-      <section class="owner-section" id="owners" aria-labelledby="owners-title">
-        <div class="owner-copy">
-          <p class="eyebrow">Для владельцев</p>
-          <h2 id="owners-title">Твой автомобиль - твой актив.</h2>
-          <p>Владелец выбирает свободные часы, подключает GPS, телематику, удаленное открытие и страховку. Когда машина простаивает, она появляется в приложении.</p>
-          <div class="step-list">
-            <article><span>01</span><h3>Проверка авто</h3><p>Осмотр, документы, фото, допуск к категориям аренды.</p></article>
-            <article><span>02</span><h3>Подключение</h3><p>GPS, удаленное открытие, телематика и страховой пакет.</p></article>
-            <article><span>03</span><h3>Доход</h3><p>Авто доступно только в выбранное владельцем время.</p></article>
+      <section>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Как сервис</p>
+            <h2>Несколько страниц и полный demo-путь</h2>
           </div>
         </div>
-        <div class="calculator" aria-label="Калькулятор дохода владельца">
-          <h3>Калькулятор дохода</h3>
-          <label>Свободно часов в день<input id="ownerHours" type="range" min="1" max="12" value="5" /><strong id="ownerHoursValue">5 ч</strong></label>
-          <label>Средняя цена за час<input id="ownerRate" type="range" min="1200" max="9000" step="300" value="3600" /><strong id="ownerRateValue">₸3 600</strong></label>
-          <label>Комиссия GhostRide<input id="platformFee" type="range" min="15" max="30" value="22" /><strong id="platformFeeValue">22%</strong></label>
-          <div class="calculator-result"><span>Доход владельца в месяц</span><strong id="ownerIncome">₸421 200</strong><small id="platformIncome">Комиссия платформы: ₸118 800</small></div>
-        </div>
-      </section>
-
-      <section class="ai-section" id="ai" aria-labelledby="ai-title">
-        <div class="section-heading"><p class="eyebrow">AI-фишки</p><h2 id="ai-title">Trust Score и Dynamic Pricing</h2></div>
         <div class="feature-grid">
-          <article><i data-lucide="shield-check" aria-hidden="true"></i><h3>Smart Trust Score</h3><p>AI оценивает стиль езды, торможения, скорость и риск ДТП. Хорошие водители получают скидки, меньше депозит и доступ к премиум авто.</p></article>
-          <article><i data-lucide="activity" aria-hidden="true"></i><h3>Dynamic Pricing</h3><p>Цена меняется по спросу, погоде, времени суток, выходным и событиям в городе. Модель похожа на Uber, но адаптирована под каршеринг.</p></article>
-          <article><i data-lucide="building-2" aria-hidden="true"></i><h3>Франшиза по городам</h3><p>Старт с 20-50 авто в одном городе, затем партнерская модель для Уральска, Атырау, Актобе, Караганды и Шымкента.</p></article>
-        </div>
-      </section>
-
-      <section class="launch-section" id="launch" aria-labelledby="launch-title">
-        <div class="launch-card">
-          <p class="eyebrow">План запуска</p>
-          <h2 id="launch-title">Старт через Telegram Mini App</h2>
-          <p>Самый быстрый путь: без дорогого нативного приложения. Карта машин, бронь, оплата и рейтинг работают как web app внутри Telegram.</p>
-          <div class="launch-flow"><span>Telegram Mini App</span><span>1 город</span><span>20-50 машин</span><span>Франшиза</span></div>
+          <article class="feature"><i data-lucide="user-round"></i><h3>Вход</h3><p>Demo-аккаунт сохраняется в браузере.</p></article>
+          <article class="feature"><i data-lucide="car"></i><h3>Добавление авто</h3><p>Владелец добавляет машину в каталог.</p></article>
+          <article class="feature"><i data-lucide="credit-card"></i><h3>Demo-оплата</h3><p>Бронь создает чек и баланс владельца.</p></article>
+          <article class="feature"><i data-lucide="wallet"></i><h3>Выплаты</h3><p>Кабинет считает доход и комиссию.</p></article>
         </div>
       </section>
     </main>
 
-    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <footer class="footer">
+      <strong>GhostRide Kazakhstan</strong>
+      <span>Народный P2P каршеринг Казахстана.</span>
+    </footer>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    <script>
-const cars = [
-  {
-    id: "elantra",
-    name: "Hyundai Elantra",
-    city: "almaty",
-    cityName: "Алматы",
-    mode: ["city", "delivery"],
-    rate: 95,
-    trust: 92,
-    distance: "240 м",
-    deposit: 15000,
-    image: "https://images.unsplash.com/photo-1549924231-f129b911e442?auto=format&fit=crop&w=900&q=80",
-    premium: false,
-  },
-  {
-    id: "camry",
-    name: "Toyota Camry 70",
-    city: "almaty",
-    cityName: "Алматы",
-    mode: ["city", "weekend", "event"],
-    rate: 145,
-    trust: 88,
-    distance: "620 м",
-    deposit: 25000,
-    image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?auto=format&fit=crop&w=900&q=80",
-    premium: true,
-  },
-  {
-    id: "sportage",
-    name: "Kia Sportage",
-    city: "astana",
-    cityName: "Астана",
-    mode: ["weekend", "delivery"],
-    rate: 130,
-    trust: 90,
-    distance: "410 м",
-    deposit: 22000,
-    image: "https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?auto=format&fit=crop&w=900&q=80",
-    premium: false,
-  },
-  {
-    id: "leaf",
-    name: "Nissan Leaf",
-    city: "uralsk",
-    cityName: "Уральск",
-    mode: ["city", "delivery"],
-    rate: 80,
-    trust: 96,
-    distance: "180 м",
-    deposit: 12000,
-    image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=900&q=80",
-    premium: false,
-  },
-  {
-    id: "mercedes",
-    name: "Mercedes E-Class",
-    city: "astana",
-    cityName: "Астана",
-    mode: ["event", "weekend"],
-    rate: 220,
-    trust: 84,
-    distance: "900 м",
-    deposit: 45000,
-    image: "https://images.unsplash.com/photo-1617814076668-0f30d2b8c9ff?auto=format&fit=crop&w=900&q=80",
-    premium: true,
-  },
-  {
-    id: "solaris",
-    name: "Hyundai Solaris",
-    city: "atyrau",
-    cityName: "Атырау",
-    mode: ["city", "delivery"],
-    rate: 85,
-    trust: 91,
-    distance: "350 м",
-    deposit: 14000,
-    image: "https://images.unsplash.com/photo-1552519507-da3b142c6e3d?auto=format&fit=crop&w=900&q=80",
-    premium: false,
-  },
-];
-
-const modeLabels = {
-  city: "City Mode",
-  weekend: "Weekend Mode",
-  event: "Event Mode",
-  delivery: "Delivery Mode",
-};
-
-const citySelect = document.querySelector("#citySelect");
-const modeTabs = document.querySelector("#modeTabs");
-const durationRange = document.querySelector("#durationRange");
-const durationValue = document.querySelector("#durationValue");
-const premiumToggle = document.querySelector("#premiumToggle");
-const carList = document.querySelector("#carList");
-const tripTotal = document.querySelector("#tripTotal");
-const tripNote = document.querySelector("#tripNote");
-const selectedCarImage = document.querySelector("#selectedCarImage");
-const selectedCarCity = document.querySelector("#selectedCarCity");
-const selectedCarName = document.querySelector("#selectedCarName");
-const selectedCarRate = document.querySelector("#selectedCarRate");
-const trustScore = document.querySelector("#trustScore");
-const distanceValue = document.querySelector("#distanceValue");
-const depositValue = document.querySelector("#depositValue");
-const bookButton = document.querySelector("#bookButton");
-const activeRideCard = document.querySelector("#activeRideCard");
-const toast = document.querySelector("#toast");
-
-let state = {
-  city: "almaty",
-  mode: "city",
-  duration: 45,
-  selectedCarId: "elantra",
-  showPremium: false,
-};
-
-function formatKzt(value) {
-  return new Intl.NumberFormat("ru-KZ", {
-    style: "currency",
-    currency: "KZT",
-    maximumFractionDigits: 0,
-  }).format(value);
-}
-
-function getVisibleCars() {
-  const filtered = cars.filter((car) => {
-    const cityMatch = car.city === state.city;
-    const modeMatch = car.mode.includes(state.mode);
-    const premiumMatch = state.showPremium || !car.premium;
-    return cityMatch && modeMatch && premiumMatch;
-  });
-
-  if (filtered.length > 0) return filtered;
-  return cars.filter((car) => car.mode.includes(state.mode)).slice(0, 3);
-}
-
-function getSelectedCar() {
-  const visibleCars = getVisibleCars();
-  return visibleCars.find((car) => car.id === state.selectedCarId) || visibleCars[0] || cars[0];
-}
-
-function calculateTrip(car) {
-  const modeMultiplier = { city: 1, weekend: 0.86, event: 1.35, delivery: 0.78 }[state.mode];
-  const trustDiscount = car.trust >= 95 ? 0.88 : car.trust >= 90 ? 0.92 : 0.97;
-  return Math.round(car.rate * state.duration * modeMultiplier * trustDiscount);
-}
-
-function renderCars() {
-  const visibleCars = getVisibleCars();
-  if (!visibleCars.some((car) => car.id === state.selectedCarId)) {
-    state.selectedCarId = visibleCars[0]?.id || cars[0].id;
-  }
-
-  carList.innerHTML = visibleCars
-    .map(
-      (car) => `
-        <article class="car-card ${car.id === state.selectedCarId ? "active" : ""}" data-car-id="${car.id}" tabindex="0">
-          <img src="${car.image}" alt="${car.name}">
-          <div>
-            <h3>${car.name}</h3>
-            <div class="car-meta">
-              <span>${car.cityName}</span>
-              <span>${car.distance}</span>
-              <span>Trust ${car.trust}</span>
-              <span>${modeLabels[state.mode]}</span>
-            </div>
-          </div>
-          <div class="car-price"><strong>${formatKzt(car.rate)}</strong><span>за минуту</span></div>
-        </article>`
-    )
-    .join("");
-
-  carList.querySelectorAll(".car-card").forEach((card) => {
-    const select = () => {
-      state.selectedCarId = card.dataset.carId;
-      render();
-    };
-    card.addEventListener("click", select);
-    card.addEventListener("keydown", (event) => {
-      if (event.key === "Enter" || event.key === " ") {
-        event.preventDefault();
-        select();
-      }
-    });
-  });
-}
-
-function renderDetails() {
-  const car = getSelectedCar();
-  const total = calculateTrip(car);
-  const discountedDeposit = car.trust >= 95 ? car.deposit * 0.7 : car.trust >= 90 ? car.deposit * 0.82 : car.deposit;
-
-  selectedCarImage.src = car.image;
-  selectedCarImage.alt = car.name;
-  selectedCarCity.textContent = car.cityName;
-  selectedCarName.textContent = car.name;
-  selectedCarRate.textContent = `${formatKzt(car.rate)}/мин`;
-  trustScore.textContent = car.trust;
-  distanceValue.textContent = car.distance;
-  depositValue.textContent = formatKzt(Math.round(discountedDeposit));
-  tripTotal.textContent = formatKzt(total);
-  tripNote.textContent = `${modeLabels[state.mode]} - Trust Score ${car.trust}`;
-  durationValue.textContent = state.duration < 60 ? `${state.duration} мин` : `${Math.round(state.duration / 60)} ч`;
-
-  activeRideCard.innerHTML = `<div><p>Ближайшая машина</p><h2>${car.name}</h2></div><strong>${car.distance}</strong>`;
-  document.querySelectorAll(".car-pin").forEach((pin) => pin.classList.toggle("active", pin.dataset.carId === car.id));
-}
-
-function render() {
-  renderCars();
-  renderDetails();
-  if (window.lucide) window.lucide.createIcons();
-}
-
-function showToast(message) {
-  toast.textContent = message;
-  toast.classList.add("visible");
-  window.setTimeout(() => toast.classList.remove("visible"), 3200);
-}
-
-citySelect.addEventListener("change", (event) => {
-  state.city = event.target.value;
-  render();
-});
-
-modeTabs.addEventListener("click", (event) => {
-  const button = event.target.closest("button[data-mode]");
-  if (!button) return;
-  state.mode = button.dataset.mode;
-  modeTabs.querySelectorAll("button").forEach((tab) => tab.classList.toggle("active", tab === button));
-  render();
-});
-
-durationRange.addEventListener("input", (event) => {
-  state.duration = Number(event.target.value);
-  renderDetails();
-});
-
-premiumToggle.addEventListener("change", (event) => {
-  state.showPremium = event.target.checked;
-  render();
-});
-
-document.querySelectorAll(".car-pin").forEach((pin) => {
-  pin.addEventListener("click", () => {
-    state.selectedCarId = pin.dataset.carId;
-    render();
-  });
-});
-
-bookButton.addEventListener("click", () => {
-  const car = getSelectedCar();
-  showToast(`${car.name} забронирована. В реальном MVP здесь будет оплата и удаленное открытие.`);
-});
-
-const ownerHours = document.querySelector("#ownerHours");
-const ownerRate = document.querySelector("#ownerRate");
-const platformFee = document.querySelector("#platformFee");
-const ownerHoursValue = document.querySelector("#ownerHoursValue");
-const ownerRateValue = document.querySelector("#ownerRateValue");
-const platformFeeValue = document.querySelector("#platformFeeValue");
-const ownerIncome = document.querySelector("#ownerIncome");
-const platformIncome = document.querySelector("#platformIncome");
-
-function updateOwnerCalculator() {
-  const hours = Number(ownerHours.value);
-  const rate = Number(ownerRate.value);
-  const fee = Number(platformFee.value);
-  const gross = hours * rate * 30;
-  const platform = Math.round((gross * fee) / 100);
-  const owner = gross - platform;
-
-  ownerHoursValue.textContent = `${hours} ч`;
-  ownerRateValue.textContent = formatKzt(rate);
-  platformFeeValue.textContent = `${fee}%`;
-  ownerIncome.textContent = formatKzt(owner);
-  platformIncome.textContent = `Комиссия платформы: ${formatKzt(platform)}`;
-}
-
-[ownerHours, ownerRate, platformFee].forEach((input) => input.addEventListener("input", updateOwnerCalculator));
-
-render();
-updateOwnerCalculator();
-
-</script>
+    <script src="app.js"></script>
   </body>
 </html>
-
