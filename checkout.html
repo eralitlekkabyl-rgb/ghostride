@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Бронирование - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="checkout">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="owners.html">Владельцам</a><a href="dashboard.html">Кабинет</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="log-in"></i><span data-auth-label>Войти</span></button></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Demo checkout</p>
+        <h1>Бронирование и оплата</h1>
+        <p class="lead">Оплата работает как демо: реального списания нет, но бронь сохраняется в кабинете.</p>
+      </section>
+      <section>
+        <div class="checkout-layout">
+          <div class="panel" id="checkoutCar"></div>
+          <div class="panel">
+            <h2>Оплата</h2>
+            <label class="field">Длительность<select id="duration"><option value="30">30 минут</option><option value="60">1 час</option><option value="120">2 часа</option><option value="1440">Weekend demo</option></select></label>
+            <label class="field">Способ оплаты<select id="method"><option>Demo Card •••• 4242</option><option>Kaspi demo</option><option>Apple Pay demo</option></select></label>
+            <label class="field">Номер карты<input value="4242 4242 4242 4242" /></label>
+            <label class="field">Имя на карте<input value="DEMO USER" /></label>
+            <div class="result"><span>Итого к оплате</span><strong id="total">0₸</strong><small id="deposit">Депозит demo включен</small></div>
+            <button class="btn primary full" id="payBtn" type="button"><i data-lucide="credit-card"></i>Оплатить demo</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Demo checkout.</span></footer>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
