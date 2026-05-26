@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Кабинет - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="dashboard">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="owners.html">Владельцам</a><a href="dashboard.html">Кабинет</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="log-in"></i><span data-auth-label>Войти</span></button></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Личный кабинет</p>
+        <h1>Брони, авто и выплаты</h1>
+        <p class="lead">Все demo-данные сохраняются на устройстве через localStorage.</p>
+      </section>
+      <section>
+        <div class="dashboard-layout">
+          <aside class="panel">
+            <div class="row" style="gap:12px">
+              <div class="avatar" id="avatar">G</div>
+              <div><h3 id="profileName">Гость</h3><p class="muted" id="profileMeta">Войдите, чтобы начать</p></div>
+            </div>
+            <button class="btn primary full" id="profileLogin" style="margin-top:14px" type="button"><i data-lucide="log-in"></i>Войти в demo</button>
+            <div class="tabs">
+              <button class="btn tab active" data-view="bookings" type="button"><i data-lucide="calendar-check"></i>Мои брони</button>
+              <button class="btn tab" data-view="mycars" type="button"><i data-lucide="car"></i>Мои авто</button>
+              <button class="btn tab" data-view="wallet" type="button"><i data-lucide="wallet"></i>Оплата и выплаты</button>
+            </div>
+          </aside>
+          <div class="panel">
+            <div class="view active" id="bookings"><h2>Мои брони</h2><div id="bookingList"></div></div>
+            <div class="view" id="mycars"><div class="split"><h2>Мои авто</h2><a class="btn primary" href="owners.html"><i data-lucide="plus"></i>Добавить</a></div><div id="ownerList"></div></div>
+            <div class="view" id="wallet"><h2>Оплата и выплаты</h2><div id="walletList"></div></div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Кабинет demo-платформы.</span></footer>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
