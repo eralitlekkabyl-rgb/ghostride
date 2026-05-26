@@ -42,7 +42,18 @@
             <label class="field"><span>Цена за минуту</span><input id="carRate" type="number" value="120" /></label>
             <label class="field"><span>Мест</span><input id="carSeats" type="number" value="5" /></label>
             <label class="field"><span>Режим</span><select id="carMode"><option value="city">Город</option><option value="weekend">Выходные</option><option value="event">Мероприятие</option><option value="delivery">Доставка</option></select></label>
-            <label class="field wide"><span>Фото URL</span><input id="carImage" value="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=900&q=80" /></label>
+            <div class="field wide">
+              <span>Фото машины</span>
+              <div class="photo-actions">
+                <label class="btn" for="carGallery"><i data-lucide="image-plus"></i>Галерея</label>
+                <label class="btn" for="carCamera"><i data-lucide="camera"></i>Камера</label>
+              </div>
+              <input class="hidden-input" id="carGallery" type="file" accept="image/*" />
+              <input class="hidden-input" id="carCamera" type="file" accept="image/*" capture="environment" />
+              <img class="photo-preview" id="carPhotoPreview" alt="Фото машины" hidden />
+              <small id="carPhotoNote">Можно выбрать фото из галереи или сделать снимок камерой на телефоне.</small>
+            </div>
+            <label class="field wide"><span>Фото URL, если нет файла</span><input id="carImage" placeholder="https://..." value="" /></label>
             <label class="field wide"><span>Удобства</span><input id="carFeatures" value="АКПП, Кондиционер, USB, Bluetooth" /></label>
             <button class="btn primary full wide" type="submit"><i data-lucide="save"></i>Сохранить авто</button>
           </form>
