@@ -275,6 +275,7 @@ let state = {
   user: read("gr_user", null),
   cars: read("gr_cars", DEFAULT_CARS).map(normalizeCar),
   bookings: read("gr_bookings", []),
+  verifications: read("gr_verifications", {}),
   city: "Все",
   mode: "all"
 };
@@ -369,10 +370,67 @@ function carStatus(car) {
   };
 }
 
+function digitsOnly(value) {
+  return (value || "").replace(/\D/g, "");
+}
+
+function normalizePlate(value) {
+  return (value || "").replace(/[\s-]/g, "").toUpperCase();
+}
+
+function validateIin(value) {
+  const iin = digitsOnly(value);
+  if (!/^\d{12}$/.test(iin)) return { ok: false, text: "ИИН должен состоять из 12 цифр" };
+  const month = Number(iin.slice(2, 4));
+  const day = Number(iin.slice(4, 6));
+  if (month < 1 || month > 12 || day < 1 || day > 31) return { ok: false, text: "Дата рождения в ИИН выглядит неверно" };
+  return { ok: true, text: "Личность подтверждена demo-проверкой" };
+}
+
+function validateIdCard(value) {
+  const number = digitsOnly(value);
+  if (number.length < 8 || number.length > 12) return { ok: false, text: "Номер удостоверения должен быть 8-12 цифр" };
+  return { ok: true, text: "Удостоверение принято" };
+}
+
+function validateDriverLicense(value) {
+  const number = (value || "").replace(/\s/g, "").toUpperCase();
+  if (!/^[A-ZА-Я0-9]{6,14}$/.test(number)) return { ok: false, text: "Номер прав должен быть 6-14 букв/цифр" };
+  return { ok: true, text: "Водитель допущен к аренде" };
+}
+
+function validatePlate(value) {
+  const plate = normalizePlate(value);
+  if (!/^\d{3}[A-ZА-Я]{3}\d{2}$/.test(plate)) return { ok: false, text: "Формат demo: 777ABC02" };
+  return { ok: true, text: "Госномер авто прошел demo-проверку" };
+}
+
+function userVerification(userId = state.user?.id) {
+  return userId ? state.verifications[userId] || null : null;
+}
+
+function isRenterVerified(userId = state.user?.id) {
+  const verification = userVerification(userId);
+  return Boolean(verification?.identity?.ok && verification?.idCard?.ok && verification?.driver?.ok);
+}
+
+function isOwnerVehicleVerified(userId = state.user?.id) {
+  const verification = userVerification(userId);
+  return Boolean(verification?.plate?.ok);
+}
+
+function isCarPlateVerified(car, userId = state.user?.id) {
+  const verification = userVerification(userId);
+  const verifiedPlate = normalizePlate(verification?.plateNumber || "");
+  const carPlate = normalizePlate(car?.specs?.plate || "");
+  return Boolean(car?.vehicleCheck?.ok || (verification?.plate?.ok && verifiedPlate && verifiedPlate === carPlate));
+}
+
 function persist() {
   write("gr_user", state.user);
   write("gr_cars", state.cars);
   write("gr_bookings", state.bookings);
+  write("gr_verifications", state.verifications);
 }
 
 function toast(message) {
@@ -522,6 +580,7 @@ function addCar(event) {
     const name = $("#carName").value.trim();
     if (!name) return toast("Введите название авто.");
     const image = selectedCarPhoto || $("#carImage").value.trim() || DEFAULT_CARS[1].image;
+    const plate = normalizePlate($("#carPlate")?.value || "");
     state.cars.unshift(normalizeCar({
       id: `car-${Date.now()}`,
       name,
@@ -537,7 +596,9 @@ function addCar(event) {
       image,
       imageSource: selectedCarPhoto ? "" : $("#carImage").value.trim(),
       photoCredit: selectedCarPhoto ? "Фото владельца" : "Фото по ссылке",
-      features: $("#carFeatures").value.split(",").map((item) => item.trim()).filter(Boolean)
+      features: $("#carFeatures").value.split(",").map((item) => item.trim()).filter(Boolean),
+      specs: { plate: plate || "GR DEMO" },
+      vehicleCheck: validatePlate(plate)
     }));
     selectedCarPhoto = "";
     persist();
@@ -729,6 +790,11 @@ function updateTotal() {
 
 function payBooking() {
   requireUser(() => {
+    if (!isRenterVerified()) {
+      toast("Сначала пройдите demo-проверку арендатора в кабинете.");
+      setTimeout(() => location.href = "dashboard.html", 900);
+      return;
+    }
     const car = checkoutCar();
     const duration = $("#duration");
     const range = selectedBookingRange();
@@ -790,11 +856,80 @@ function removeCar(id) {
   });
 }
 
+function verificationBadge(result, fallback = "Не проверено") {
+  if (!result) return `<span class="status danger">${fallback}</span>`;
+  return `<span class="status ${result.ok ? "" : "danger"}">${result.ok ? "Проверено" : "Ошибка"}</span>`;
+}
+
+function verificationLine(title, result, fallback) {
+  return `<div class="line"><div><strong>${title}</strong><p>${result?.text || fallback}</p></div><div class="line-actions">${verificationBadge(result)}</div></div>`;
+}
+
+function renderVerification() {
+  const node = $("#verificationPanel");
+  if (!node) return;
+  if (!state.user) {
+    node.innerHTML = `<div class="empty">Войдите, чтобы пройти demo-проверку арендатора и автомобиля.</div>`;
+    return;
+  }
+
+  const verification = userVerification() || {};
+  node.innerHTML = `
+    <form class="verification-form" id="verificationForm">
+      <div class="form-grid">
+        <label class="field"><span>ИИН арендатора</span><input id="verifyIin" inputmode="numeric" maxlength="12" value="${verification.iin || ""}" placeholder="990101123456" /></label>
+        <label class="field"><span>№ удостоверения личности</span><input id="verifyIdCard" inputmode="numeric" value="${verification.idCardNumber || ""}" placeholder="123456789" /></label>
+        <label class="field"><span>№ водительского удостоверения</span><input id="verifyLicense" value="${verification.licenseNumber || ""}" placeholder="DL123456" /></label>
+        <label class="field"><span>Госномер авто</span><input id="verifyPlate" value="${verification.plateNumber || ""}" placeholder="777ABC02" /></label>
+      </div>
+      <div class="verification-actions">
+        <button class="btn primary" type="submit"><i data-lucide="shield-check"></i>Проверить demo</button>
+        <span class="muted">Данные сохраняются только в браузере. Реальная проверка требует согласия пользователя и KYC/API.</span>
+      </div>
+    </form>
+    <div class="verification-grid">
+      ${verificationLine("Личность арендатора", verification.identity, "ИИН еще не проверен")}
+      ${verificationLine("Удостоверение личности", verification.idCard, "Документ еще не проверен")}
+      ${verificationLine("Водительские права", verification.driver, "Водитель еще не проверен")}
+      ${verificationLine("Госномер авто", verification.plate, "Авто еще не проверено")}
+    </div>
+  `;
+  $("#verificationForm").onsubmit = runVerification;
+  if (window.lucide) lucide.createIcons();
+}
+
+function runVerification(event) {
+  event.preventDefault();
+  requireUser(() => {
+    const iin = $("#verifyIin").value.trim();
+    const idCardNumber = $("#verifyIdCard").value.trim();
+    const licenseNumber = $("#verifyLicense").value.trim();
+    const plateNumber = normalizePlate($("#verifyPlate").value);
+    const result = {
+      iin,
+      idCardNumber,
+      licenseNumber,
+      plateNumber,
+      identity: validateIin(iin),
+      idCard: validateIdCard(idCardNumber),
+      driver: validateDriverLicense(licenseNumber),
+      plate: validatePlate(plateNumber),
+      checkedAt: new Date().toISOString()
+    };
+    state.verifications[state.user.id] = result;
+    state.user.verified = result.identity.ok && result.idCard.ok && result.driver.ok;
+    persist();
+    renderDashboard();
+    toast(result.identity.ok && result.idCard.ok && result.driver.ok ? "Арендатор прошел demo-проверку." : "Проверьте поля проверки.");
+  });
+}
+
 function renderDashboard() {
   const userId = state.user?.id || "guest";
   const name = state.user?.name || "Гость";
+  const renterVerified = isRenterVerified(userId);
   $("#profileName").textContent = name;
-  $("#profileMeta").textContent = state.user ? `${state.user.contact} - ${roleLabel(state.user.role)}` : "Войдите, чтобы начать";
+  $("#profileMeta").textContent = state.user ? `${state.user.contact} - ${roleLabel(state.user.role)} - ${renterVerified ? "арендатор проверен" : "нужна проверка"}` : "Войдите, чтобы начать";
   $("#avatar").textContent = (name[0] || "G").toUpperCase();
   $("#profileLogin").innerHTML = state.user ? `<i data-lucide="log-out"></i>Выйти` : `<i data-lucide="log-in"></i>Войти в demo`;
 
@@ -820,10 +955,11 @@ function renderDashboard() {
   $("#ownerList").innerHTML = myCars.length
     ? myCars.map((car) => {
         const status = carStatus(car);
+        const vehicleVerified = isCarPlateVerified(car, userId);
         return line(
           car.name,
-          `${car.city} - ${car.rate}₸/мин - ${status.busy ? status.meta : `Trust ${car.trust}`}`,
-          status.label,
+          `${car.city} - ${car.rate}₸/мин - ${car.specs?.plate || "госномер не указан"} - ${status.busy ? status.meta : `Trust ${car.trust}`}`,
+          vehicleVerified ? "Авто проверено" : status.label,
           `<button class="btn danger compact-btn" data-remove-car="${car.id}" type="button"><i data-lucide="trash-2"></i>Удалить</button>`
         );
       }).join("")
@@ -834,6 +970,7 @@ function renderDashboard() {
     line("Комиссия GhostRide", "20% с заказов", money(fee)) +
     `<div class="line"><div><strong>Demo Card •••• 7777</strong><p>Карта для выплат подключена</p></div><button class="btn" id="payoutBtn" type="button">Выплата</button></div>`;
   $("#payoutBtn")?.addEventListener("click", () => toast("Demo-выплата создана."));
+  renderVerification();
   if (window.lucide) lucide.createIcons();
 }
 
