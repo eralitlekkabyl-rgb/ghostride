@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Админ - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="admin">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Demo admin</p>
+        <h1>Панель управления</h1>
+        <p class="lead">Модерация машин, броней, документов, отзывов, штрафов и статусов. Это demo без настоящего сервера.</p>
+      </section>
+      <section>
+        <div id="adminApp"></div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Админ-панель demo-платформы.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

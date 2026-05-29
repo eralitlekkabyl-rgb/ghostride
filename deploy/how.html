@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Как работает - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="how">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button><a class="btn primary" href="cars.html"><i data-lucide="map-pin"></i>Найти авто</a></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Сценарий аренды</p>
+        <h1>От регистрации до завершения поездки</h1>
+        <p class="lead">Логика как у современного каршеринга: регистрация, проверка, карта, бронь, осмотр, поездка, возврат в разрешенной зоне.</p>
+      </section>
+      <section>
+        <div class="process-grid">
+          <article class="process-step"><b>1</b><h3>Регистрация</h3><p class="muted">Телефон/email, пароль или Google/Apple. Для аренды нужны ИИН, удостоверение и права.</p></article>
+          <article class="process-step"><b>2</b><h3>Проверка</h3><p class="muted">Demo KYC проверяет формат документов, а реальный запуск подключает гос/API-проверки.</p></article>
+          <article class="process-step"><b>3</b><h3>Карта авто</h3><p class="muted">Пользователь видит ближайшие машины, статус, депозит, тариф, Trust Score и зону завершения.</p></article>
+          <article class="process-step"><b>4</b><h3>Бронь</h3><p class="muted">Выбор даты, времени и длительности. Если слот занят, сайт покажет другой доступный период.</p></article>
+          <article class="process-step"><b>5</b><h3>Осмотр</h3><p class="muted">Перед поездкой водитель фиксирует фото кузова и салона, чтобы защитить себя и владельца.</p></article>
+          <article class="process-step"><b>6</b><h3>Поездка</h3><p class="muted">AI Trust Score учитывает скорость, торможения, пунктуальность и штрафы.</p></article>
+          <article class="process-step"><b>7</b><h3>Заправка/зарядка</h3><p class="muted">Если топлива мало, водитель заправляет по инструкции и получает demo-бонус или компенсацию.</p></article>
+          <article class="process-step"><b>8</b><h3>Завершение</h3><p class="muted">Машину оставляют в разрешенной зоне, закрывают через приложение и получают чек.</p></article>
+        </div>
+      </section>
+      <section class="soft-band">
+        <div class="section-head"><div><p class="eyebrow">Перед поездкой</p><h2>Чек-лист водителя</h2></div></div>
+        <div class="feature-grid">
+          <article class="feature"><i data-lucide="badge-check"></i><h3>Документы</h3><p>Аккаунт и права проверены, возраст и стаж подходят под правила авто.</p></article>
+          <article class="feature"><i data-lucide="camera"></i><h3>Фотофиксация</h3><p>Сделаны фото кузова, салона, уровня топлива или заряда.</p></article>
+          <article class="feature"><i data-lucide="shield"></i><h3>Страховка</h3><p>Пользователь видит условия страхования и размер ответственности.</p></article>
+          <article class="feature"><i data-lucide="map"></i><h3>Зона</h3><p>Маршрут и точка завершения находятся в разрешенной зоне GhostRide.</p></article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Сценарий аренды и проверки.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

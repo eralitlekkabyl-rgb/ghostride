@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Тарифы - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="tariffs">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button><a class="btn primary" href="cars.html"><i data-lucide="car-front"></i>Каталог</a></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Тарифы</p>
+        <h1>Минуты, часы, выходные и корпоративные поездки</h1>
+        <p class="lead">GhostRide считает аренду прозрачно: ставка владельца, сервисный сбор, депозит, лимит пробега и возможные штрафы видны до оплаты.</p>
+      </section>
+      <section>
+        <div class="tariff-grid">
+          <article class="tariff-card"><span>City Mode</span><h2>15-60 минут</h2><strong>от 80₸/мин</strong><p class="muted">Короткие поездки по городу, встречи, дела, университет, офис.</p><a class="btn primary" href="cars.html">Выбрать авто</a></article>
+          <article class="tariff-card featured"><span>Hourly Mode</span><h2>1-6 часов</h2><strong>скидка до 12%</strong><p class="muted">Подходит для нескольких дел подряд, семейных поездок и аэропорта.</p><a class="btn primary" href="cars.html">Посмотреть</a></article>
+          <article class="tariff-card"><span>Weekend Mode</span><h2>2 дня</h2><strong>пакетный тариф</strong><p class="muted">Выходные за городом, поездка в область, гости, свадьба.</p><a class="btn primary" href="cars.html">Забронировать</a></article>
+        </div>
+        <div class="detail-grid">
+          <article class="panel detail-section">
+            <div class="section-head compact"><div><p class="eyebrow">Что входит</p><h2>Включено в тариф</h2></div></div>
+            <div class="check-list">
+              <div><i data-lucide="check"></i><span>Страхование по demo-сценарию</span></div>
+              <div><i data-lucide="check"></i><span>GPS и телематика</span></div>
+              <div><i data-lucide="check"></i><span>Поддержка и история поездки</span></div>
+              <div><i data-lucide="check"></i><span>Фотофиксация до и после аренды</span></div>
+            </div>
+          </article>
+          <article class="panel detail-section">
+            <div class="section-head compact"><div><p class="eyebrow">Дополнительно</p><h2>Депозит и штрафы</h2></div></div>
+            <div class="line"><div><strong>Депозит</strong><p>Блокируется на время поездки и возвращается после осмотра.</p></div><span class="status">от 10 000₸</span></div>
+            <div class="line"><div><strong>Опоздание</strong><p>Начисляется, если водитель не продлил бронь.</p></div><span class="status danger">demo</span></div>
+            <div class="line"><div><strong>Пробег</strong><p>Пакет может включать лимит, сверх лимита считается отдельно.</p></div><span class="status">по авто</span></div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Прозрачные тарифы и депозиты.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

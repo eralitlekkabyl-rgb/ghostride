@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FAQ - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="faq">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Вопрос-ответ</p>
+        <h1>Частые вопросы</h1>
+        <p class="lead">Ответы для арендаторов, владельцев авто и будущих корпоративных клиентов.</p>
+      </section>
+      <section>
+        <div class="faq-list">
+          <details open><summary>Можно ли реально войти через Google и Apple?</summary><p>Да, после подключения Supabase Auth и включения провайдеров Google/Apple. Сейчас кнопки уже готовы в интерфейсе.</p></details>
+          <details><summary>Где хранятся машины и брони?</summary><p>Без Supabase данные сохраняются в браузере. После подключения Supabase они синхронизируются в общей базе.</p></details>
+          <details><summary>Кто отвечает за машину?</summary><p>В demo-версии ответственность показывается через депозит, штрафы и правила. Для реального запуска нужны договор, страхование и проверка документов.</p></details>
+          <details><summary>Как владелец получает деньги?</summary><p>Кабинет считает доход, комиссию GhostRide и demo-выплаты. Реальные выплаты подключаются через платежного провайдера или банк.</p></details>
+          <details><summary>Что делать, если топливо закончилось?</summary><p>Водитель заправляет по инструкции, фиксирует чек и получает компенсацию или бонус. Для электромобиля аналогично работает зарядка.</p></details>
+          <details><summary>Можно ли завершить поездку где угодно?</summary><p>Нет. Поездка завершается только в разрешенной зоне, чтобы следующему пользователю было удобно найти авто.</p></details>
+          <details><summary>Что такое AI Trust Score?</summary><p>Это оценка надежности пользователя и авто: стиль езды, скорость, торможения, пунктуальность, отзывы и штрафы.</p></details>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>FAQ и поддержка.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

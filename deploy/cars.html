@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Автомобили - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="cars">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button><a class="btn primary" href="owners.html"><i data-lucide="plus-circle"></i>Сдать авто</a></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">Каталог</p>
+        <h1>Авто рядом</h1>
+        <p class="lead">Фильтруйте машины по городу и режиму аренды, затем переходите к demo-бронированию и оплате.</p>
+      </section>
+      <section>
+        <div class="chips" id="cityChips"></div>
+        <div class="chips" id="modeChips"></div>
+        <div class="map-shell" id="carsMap"></div>
+        <div class="grid" id="carsGrid"></div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>Каталог demo-авто.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

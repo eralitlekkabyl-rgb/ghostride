@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>GhostRide Kazakhstan</title>
+    <meta name="description" content="GhostRide Kazakhstan - народный P2P каршеринг." />
+    <link rel="preconnect" href="https://images.unsplash.com" />
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="home">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav">
+        <a href="cars.html">Автомобили</a>
+        <a href="how.html">Как работает</a>
+        <a href="tariffs.html">Тарифы</a>
+        <a href="owners.html">Владельцам</a>
+        <a href="business.html">Бизнес</a>
+        <a href="faq.html">FAQ</a>
+        <a href="dashboard.html">Кабинет</a>
+        <a href="admin.html">Админ</a>
+      </nav>
+      <div class="top-actions">
+        <button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button>
+        <a class="btn primary" href="cars.html"><i data-lucide="map-pin"></i>Начать</a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Народный каршеринг Казахстана</p>
+          <h1>Машина должна зарабатывать</h1>
+          <p class="lead">P2P каршеринг с входом, каталогом авто, добавлением своей машины, demo-бронью, demo-оплатой, выплатами владельцу и AI Trust Score.</p>
+          <div class="hero-actions">
+            <a class="btn primary" href="cars.html"><i data-lucide="car-front"></i>Найти машину</a>
+            <a class="btn" href="owners.html"><i data-lucide="plus-circle"></i>Сдать авто</a>
+          </div>
+          <div class="stats">
+            <div><strong id="homeCars">0</strong><span>авто в каталоге</span></div>
+            <div><strong id="homeBookings">0</strong><span>demo-броней</span></div>
+            <div><strong>15-30%</strong><span>комиссия</span></div>
+            <div><strong>AI</strong><span>Trust Score</span></div>
+          </div>
+        </div>
+
+        <div class="phone-preview">
+          <div class="phone-top"><span>09:41</span><strong>GhostRide</strong><i data-lucide="signal"></i></div>
+          <div class="map-preview">
+            <img src="https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=1200&q=80" alt="Городская улица" />
+            <span class="pin active" style="left:22%;top:38%">95₸</span>
+            <span class="pin" style="left:62%;top:30%">145₸</span>
+            <span class="pin" style="left:48%;top:68%">120₸</span>
+            <span class="pin" style="left:76%;top:58%">80₸</span>
+          </div>
+          <div class="preview-card">
+            <p>Ближайшая машина</p>
+            <h2 id="homePreviewCar">Hyundai Elantra</h2>
+            <div class="mini-grid"><span>Trust 92</span><span>Demo Pay</span><span>App Unlock</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Как сервис</p>
+            <h2>Несколько страниц и полный demo-путь</h2>
+          </div>
+        </div>
+        <div class="feature-grid">
+          <article class="feature"><i data-lucide="user-round"></i><h3>Вход</h3><p>Demo-аккаунт сохраняется в браузере.</p></article>
+          <article class="feature"><i data-lucide="car"></i><h3>Добавление авто</h3><p>Владелец добавляет машину в каталог.</p></article>
+          <article class="feature"><i data-lucide="credit-card"></i><h3>Demo-оплата</h3><p>Бронь создает чек и баланс владельца.</p></article>
+          <article class="feature"><i data-lucide="wallet"></i><h3>Выплаты</h3><p>Кабинет считает доход и комиссию.</p></article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <strong>GhostRide Kazakhstan</strong>
+      <span>Народный P2P каршеринг Казахстана.</span>
+    </footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

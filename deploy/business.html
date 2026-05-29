@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Бизнес - GhostRide</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body data-page="business">
+    <header class="topbar">
+      <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GhostRide<small>Kazakhstan</small></span></a>
+      <nav class="nav"><a href="cars.html">Автомобили</a><a href="how.html">Как работает</a><a href="tariffs.html">Тарифы</a><a href="owners.html">Владельцам</a><a href="business.html">Бизнес</a><a href="faq.html">FAQ</a><a href="dashboard.html">Кабинет</a><a href="admin.html">Админ</a></nav>
+      <div class="top-actions"><button class="btn" data-auth-open type="button"><i data-lucide="user-plus"></i><span data-auth-label>Регистрация</span></button></div>
+    </header>
+    <main>
+      <section class="page-hero">
+        <p class="eyebrow">B2B</p>
+        <h1>Корпоративный доступ к народному автопарку</h1>
+        <p class="lead">Для компаний, курьеров, торговых представителей и команд, которым нужен транспорт без покупки автопарка.</p>
+      </section>
+      <section>
+        <div class="feature-grid">
+          <article class="feature"><i data-lucide="building-2"></i><h3>Команды</h3><p>Несколько сотрудников в одном корпоративном аккаунте.</p></article>
+          <article class="feature"><i data-lucide="receipt"></i><h3>Закрывающие документы</h3><p>Единый отчет по поездкам, депозитам, штрафам и сервисному сбору.</p></article>
+          <article class="feature"><i data-lucide="route"></i><h3>Лимиты</h3><p>Настройка городов, времени, классов авто и бюджетов.</p></article>
+          <article class="feature"><i data-lucide="truck"></i><h3>Delivery Mode</h3><p>Отдельные сценарии для доставки, курьеров и выездных мастеров.</p></article>
+        </div>
+        <div class="panel business-form">
+          <h2>Заявка для компании</h2>
+          <div class="form-grid">
+            <label class="field"><span>Компания</span><input placeholder="Название компании" /></label>
+            <label class="field"><span>Город</span><input placeholder="Алматы, Астана..." /></label>
+            <label class="field"><span>Сотрудников</span><input type="number" value="10" /></label>
+            <label class="field"><span>Контакт</span><input placeholder="+7 или email" /></label>
+          </div>
+          <button class="btn primary" type="button" onclick="window.dispatchEvent(new CustomEvent('ghostride-toast',{detail:'Demo-заявка сохранена. Для реального B2B нужен backend CRM.'}))"><i data-lucide="send"></i>Отправить demo-заявку</button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer"><strong>GhostRide Kazakhstan</strong><span>B2B и корпоративные поездки.</span></footer>
+    <script src="config.js"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
